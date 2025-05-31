@@ -1,0 +1,95 @@
+<div class="product-showcase">
+  <header class="showcase-header">
+    <h1>Vitrine de Produtos</h1>
+    <p>Descubra nossa seleção de produtos incríveis</p>
+  </header>
+
+  <!-- Filtros -->
+  <div class="filters-section">
+    <div class="search-container">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="onSearchChange()"
+        placeholder="Buscar produtos..."
+        class="search-input">
+    </div>
+
+    <div class="category-filter">
+      <select 
+        [(ngModel)]="selectedCategory" 
+        (change)="onCategoryChange()"
+        class="category-select">
+        <option value="">Todas as categorias</option>
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category | titlecase }}
+        </option>
+      </select>
+    </div>
+
+    <button 
+      (click)="clearFilters()" 
+      class="clear-filters-btn"
+      [disabled]="!selectedCategory && !searchTerm">
+      Limpar Filtros
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Carregando produtos...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="error">
+    <p>{{ error }}</p>
+    <button (click)="loadProducts()" class="retry-btn">Tentar Novamente</button>
+  </div>
+
+  <!-- Produtos -->
+  <div *ngIf="!loading && !error" class="products-container">
+    <div *ngIf="filteredProducts.length === 0" class="no-products">
+      <p>Nenhum produto encontrado.</p>
+    </div>
+
+    <div class="products-grid">
+      <div *ngFor="let product of filteredProducts" class="product-card">
+        <div class="product-image-container">
+          <img 
+            [src]="product.image" 
+            [alt]="product.title"
+            class="product-image"
+            loading="lazy">
+        </div>
+        
+        <div class="product-info">
+          <h3 class="product-title">{{ product.title }}</h3>
+          
+          <div class="product-rating">
+            <div class="stars">
+              <span 
+                *ngFor="let star of getStarArray(product.rating.rate)" 
+                class="star"
+                [class.filled]="star === 1">
+                ★
+              </span>
+            </div>
+            <span class="rating-count">({{ product.rating.count }})</span>
+          </div>
+          
+          <p class="product-description">
+            {{ product.description.length > 100 ? 
+                (product.description | slice:0:100) + '...' : 
+                product.description }}
+          </p>
+          
+          <div class="product-footer">
+            <span class="product-price">{{ formatPrice(product.price) }}</span>
+            <button class="add-to-cart-btn">Adicionar ao Carrinho</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
