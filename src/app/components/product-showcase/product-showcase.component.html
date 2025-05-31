@@ -86,7 +86,22 @@
           
           <div class="product-footer">
             <span class="product-price">{{ formatPrice(product.price) }}</span>
-            <button class="add-to-cart-btn">Adicionar ao Carrinho</button>
+            <div class="product-actions">
+              <button class="add-to-cart-btn">Adicionar ao Carrinho</button>
+              <button 
+                *ngIf="!isInComparison(product.id)" 
+                class="compare-btn"
+                (click)="addToComparison(product)"
+                [disabled]="!canAddToComparison()">
+                Comparar
+              </button>
+              <button 
+                *ngIf="isInComparison(product.id)" 
+                class="remove-compare-btn"
+                (click)="removeFromComparison(product)">
+                Remover da Comparação
+              </button>
+            </div>
           </div>
         </div>
       </div>

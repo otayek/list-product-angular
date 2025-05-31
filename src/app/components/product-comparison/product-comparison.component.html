@@ -1,0 +1,111 @@
+<div class="comparison-container" [class.visible]="isVisible && products.length > 0">
+  <!-- Botão flutuante para mostrar/esconder -->
+  <button 
+    *ngIf="products.length > 0" 
+    class="comparison-toggle"
+    (click)="toggleVisibility()"
+    [class.expanded]="isVisible">
+    <span class="toggle-icon">{{ isVisible ? '▼' : '▲' }}</span>
+    <span class="comparison-count">{{ products.length }}</span>
+    <span class="toggle-text">{{ isVisible ? 'Ocultar' : 'Comparar' }}</span>
+  </button>
+
+  <!-- Painel de comparação -->
+  <div class="comparison-panel" *ngIf="isVisible">
+    <div class="comparison-header">
+      <h3>Comparação de Produtos ({{ products.length }}/4)</h3>
+      <button class="clear-all-btn" (click)="clearAll()">
+        Limpar Tudo
+      </button>
+    </div>
+
+    <div class="comparison-grid">
+      <!-- Coluna de atributos -->
+      <div class="attributes-column">
+        <div class="attribute-row header-row">Produto</div>
+        <div class="attribute-row">Imagem</div>
+        <div class="attribute-row">Preço</div>
+        <div class="attribute-row">Avaliação</div>
+        <div class="attribute-row">Categoria</div>
+        <div class="attribute-row">Descrição</div>
+        <div class="attribute-row">Ações</div>
+      </div>
+
+      <!-- Colunas dos produtos -->
+      <div 
+        *ngFor="let product of products; trackBy: trackByProductId" 
+        class="product-column">
+        
+        <!-- Nome do produto -->
+        <div class="product-cell header-cell">
+          <h4 class="product-name">{{ product.title }}</h4>
+        </div>
+
+        <!-- Imagem -->
+        <div class="product-cell image-cell">
+          <img 
+            [src]="product.image" 
+            [alt]="product.title"
+            class="comparison-image">
+        </div>
+
+        <!-- Preço -->
+        <div class="product-cell price-cell">
+          <span 
+            class="price"
+            [class.best-price]="isBestPrice(product.price)">
+            {{ formatPrice(product.price) }}
+          </span>
+          <span *ngIf="isBestPrice(product.price)" class="best-badge">Melhor Preço</span>
+        </div>
+
+        <!-- Avaliação -->
+        <div class="product-cell rating-cell">
+          <div class="rating-container" [class.best-rating]="isBestRating(product.rating.rate)">
+            <div class="stars">
+              <span 
+                *ngFor="let star of getStarArray(product.rating.rate)" 
+                class="star"
+                [class.filled]="star === 1">
+                ★
+              </span>
+            </div>
+            <span class="rating-value">{{ product.rating.rate }}/5</span>
+            <span class="rating-count">({{ product.rating.count }})</span>
+          </div>
+          <span *ngIf="isBestRating(product.rating.rate)" class="best-badge">Melhor Avaliação</span>
+        </div>
+
+        <!-- Categoria -->
+        <div class="product-cell category-cell">
+          <span class="category-badge">{{ product.category | titlecase }}</span>
+        </div>
+
+        <!-- Descrição -->
+        <div class="product-cell description-cell">
+          <p class="description-text">
+            {{ product.description.length > 100 ? 
+                (product.description | slice:0:100) + '...' : 
+                product.description }}
+          </p>
+        </div>
+
+        <!-- Ações -->
+        <div class="product-cell actions-cell">
+          <button class="remove-btn" (click)="removeProduct(product.id)">
+            Remover
+          </button>
+          <button class="add-cart-btn">
+            Adicionar ao Carrinho
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensagem quando vazio -->
+    <div *ngIf="products.length === 0" class="empty-comparison">
+      <p>Nenhum produto selecionado para comparação.</p>
+      <p>Adicione produtos clicando no botão "Comparar" nos cards dos produtos.</p>
+    </div>
+  </div>
+</div>

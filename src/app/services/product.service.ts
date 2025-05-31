@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
-import { HttpClient } from "@angular/common/http" // <-- alterado aqui
+
 import type { Observable } from "rxjs"
 import type { Product } from "../models/product.interface"
-// ...existing code...
+import { HttpClient } from "@angular/common/http"
 
 @Injectable({
   providedIn: "root",
